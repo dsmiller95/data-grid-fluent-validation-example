@@ -7,7 +7,7 @@
           Responsive
           Editable
           UseValidation
-          ValidationsHandlerType="typeof(FluentValidationHandler)">
+          ValidationsHandlerType="typeof(TestValidationHandler)">
     <DataGridColumn Field="@nameof( Employee.FirstName )" Caption="Name" Editable />
     <DataGridCommandColumn />
 </DataGrid>
@@ -33,4 +33,18 @@
         public string LastName { get; set; }
     }
     private List<Employee> employeeList = new() { new() { FirstName = "David" }, new() { FirstName = "Mladen" }, new() { FirstName = "John" }, new() { FirstName = "Ana" }, new() { FirstName = "Jessica" } };
+
+    public class TestValidationHandler : IValidationHandler
+    {
+        public void Validate(IValidation validation, object newValidationValue)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task ValidateAsync(IValidation validation, object newValidationValue, CancellationToken cancellationToken = new CancellationToken())
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 }
