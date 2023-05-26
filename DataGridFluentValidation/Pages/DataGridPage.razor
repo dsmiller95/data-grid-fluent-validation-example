@@ -1,33 +1,36 @@
-﻿@using DataGridFluentValidation.Components.TodoApp
-@using System.ComponentModel.DataAnnotations
+﻿@using Blazorise.FluentValidation
+@using FluentValidation
 @page "/data-grid-demo"
 
 <DataGrid TItem="Employee"
           Data="@employeeList"
           Responsive
           Editable
-          UseValidation>
-    <DataGridColumn Field="@nameof( Employee.FirstName )" Caption="Name" Validator="@CheckName" Editable />
+          UseValidation
+          ValidationsHandlerType="typeof(FluentValidationHandler)">
+    <DataGridColumn Field="@nameof( Employee.FirstName )" Caption="Name" Editable />
     <DataGridCommandColumn />
 </DataGrid>
 @code{
+    
+    public class EmployeeValidator : AbstractValidator<Employee>
+    {
+        public EmployeeValidator()
+        {
+            RuleFor( vm => vm.FirstName )
+                .NotEmpty()
+                .MaximumLength( 30 );
+
+            RuleFor( vm => vm.LastName )
+                .NotEmpty()
+                .MaximumLength( 30 );
+        }
+    }
+    
     public class Employee
     {
-        [Required]
         public string FirstName { get; set; }
-
-        [Required]
         public string LastName { get; set; }
     }
     private List<Employee> employeeList = new() { new() { FirstName = "David" }, new() { FirstName = "Mladen" }, new() { FirstName = "John" }, new() { FirstName = "Ana" }, new() { FirstName = "Jessica" } };
-
-    public void CheckName( ValidatorEventArgs validationArgs )
-    {
-        ValidationRule.IsNotEmpty( validationArgs );
-
-        if ( validationArgs.Status == ValidationStatus.Error )
-        {
-            validationArgs.ErrorText = "Name can't be empty.";
-        }
-    }
 }
