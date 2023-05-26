@@ -1,0 +1,73 @@
+﻿@using Blazorise.FluentValidation
+@using FluentValidation
+@page "/fluent-validation-demo"
+<Validations @ref="@fluentValidations" Mode="ValidationMode.Manual" Model="@person" HandlerType="typeof(FluentValidationHandler)">
+    <Validation>
+        <Field>
+            <FieldLabel>First name</FieldLabel>
+            <TextEdit Placeholder="Enter first name..." @bind-Text="@person.FirstName">
+                <Feedback>
+                    <ValidationError />
+                </Feedback>
+            </TextEdit>
+        </Field>
+    </Validation>
+    <Validation>
+        <Field>
+            <FieldLabel>Last name</FieldLabel>
+            <TextEdit Placeholder="Enter last name..." @bind-Text="@person.LastName">
+                <Feedback>
+                    <ValidationError />
+                </Feedback>
+            </TextEdit>
+        </Field>
+    </Validation>
+    <Validation>
+        <Field>
+            <FieldLabel>Age</FieldLabel>
+            <NumericEdit Placeholder="Enter age..." @bind-Value="@person.Age">
+                <Feedback>
+                    <ValidationError />
+                </Feedback>
+            </NumericEdit>
+        </Field>
+    </Validation>
+</Validations>
+
+<Button Color="Color.Primary" Clicked="@OnSavePerson">Save</Button>
+@code {
+    Validations fluentValidations;
+
+    Person person = new();
+
+    protected async Task OnSavePerson()
+    {
+        if ( await fluentValidations.ValidateAll() )
+        {
+    // the person is validated and we can proceed with the saving process
+        }
+    }
+    public class Person
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int Age { get; set; }
+    }
+    public class PersonValidator : AbstractValidator<Person>
+    {
+
+        public PersonValidator()
+        {
+            RuleFor( vm => vm.FirstName )
+                .NotEmpty()
+                .MaximumLength( 30 );
+
+            RuleFor( vm => vm.LastName )
+                .NotEmpty()
+                .MaximumLength( 30 );
+
+            RuleFor( vm => vm.Age )
+                .GreaterThanOrEqualTo( 18 );
+        }
+    }
+}
