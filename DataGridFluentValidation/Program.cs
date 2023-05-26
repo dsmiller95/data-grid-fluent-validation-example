@@ -1,6 +1,9 @@
 using Blazorise;
 using Blazorise.Bootstrap;
+using Blazorise.FluentValidation;
 using Blazorise.Icons.FontAwesome;
+using DataGridFluentValidation;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +12,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 AddBlazorise( builder.Services );
+builder.Services.AddValidatorsFromAssembly( typeof( App ).Assembly );
 
 var app = builder.Build();
 
@@ -38,5 +42,6 @@ void AddBlazorise(IServiceCollection services)
         .AddBlazorise();
     services
         .AddBootstrapProviders()
-        .AddFontAwesomeIcons();
+        .AddFontAwesomeIcons()
+        .AddBlazoriseFluentValidation();
 }

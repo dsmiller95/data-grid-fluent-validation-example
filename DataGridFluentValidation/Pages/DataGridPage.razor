@@ -1,0 +1,33 @@
+﻿@using DataGridFluentValidation.Components.TodoApp
+@using System.ComponentModel.DataAnnotations
+@page "/data-grid-demo"
+
+<DataGrid TItem="Employee"
+          Data="@employeeList"
+          Responsive
+          Editable
+          UseValidation>
+    <DataGridColumn Field="@nameof( Employee.FirstName )" Caption="Name" Validator="@CheckName" Editable />
+    <DataGridCommandColumn />
+</DataGrid>
+@code{
+    public class Employee
+    {
+        [Required]
+        public string FirstName { get; set; }
+
+        [Required]
+        public string LastName { get; set; }
+    }
+    private List<Employee> employeeList = new() { new() { FirstName = "David" }, new() { FirstName = "Mladen" }, new() { FirstName = "John" }, new() { FirstName = "Ana" }, new() { FirstName = "Jessica" } };
+
+    public void CheckName( ValidatorEventArgs validationArgs )
+    {
+        ValidationRule.IsNotEmpty( validationArgs );
+
+        if ( validationArgs.Status == ValidationStatus.Error )
+        {
+            validationArgs.ErrorText = "Name can't be empty.";
+        }
+    }
+}
